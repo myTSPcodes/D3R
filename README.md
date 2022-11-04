@@ -1,4 +1,4 @@
-# This is a codebase to connect R and D3
+# Connecting R & D3
 
 Tasks:
 
