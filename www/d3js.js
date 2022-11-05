@@ -2,15 +2,28 @@
 // 'phonedata' is what we have specified in server and it must match here
 
 Shiny.addCustomMessageHandler("r-data2-d3",d3jschart);
-function d3jschart(d3data){
+function d3jschart(d3Dataa){
   
   
   
 
 	// to store the data
-	var worldphonesdata = d3data;
-	
-	console.log(worldphonesdata);
+	var r2d3Data = d3Dataa;
+  let MyData = r2d3Data[0];
+	console.log(MyData)
+	console.log(MyData.age)
+	console.log(MyData.slider)
+	console.log(MyData.body_part)
+	//console.log(MyData['age'])
+	//console.log(MyData['weight'])
+
+	console.log("*************************")
+	console.log("*************************")
+	//console.log(d3Data['head...']) // direct pass from R now is called head 
+	//console.log(d3Data[0]['d3Data'].age)
+
+;
+
 	
 	// to remove previous chart
 	d3.selectAll("svg").remove();
@@ -27,18 +40,19 @@ function d3jschart(d3data){
 		.attr("height", h + margin.top + margin.bottom);
 		
 	// convert string to integer
-	worldphonesdata.forEach(function(k) {
-            k.Country = parseInt(k.Country);
+	r2d3Data.forEach(function(k) {
+            k.age = parseInt(k.age);
+            console.log(k.age)
     });		
 
 	// scale the data
-	var xscale = d3.scaleBand().domain(worldphonesdata.map(function(d,i){return d.Year})).range([0, w+20]);
+	var xscale = d3.scaleBand().domain(r2d3Data.map(function(d,i){return d.age})).range([0, w+20]);
 				
-	var yscale = d3.scaleLinear().domain([0, d3.max(worldphonesdata, function(d) { return d.Country;})]).range([h,0]);
+	var yscale = d3.scaleLinear().domain([0, d3.max(r2d3Data, function(d) { return d.slider;})]).range([h,0]);
 	
 	// manually set the colors
 	var colorScale = d3.scaleOrdinal()
-				.domain(worldphonesdata.map(function(d,i){return d.Year}))
+				.domain(r2d3Data.map(function(d,i){return d.age}))
 				.range(["red","lightblue","lightgreen","grey","Yellow","salmon","brown"]);
 	
 	/*
@@ -52,21 +66,21 @@ function d3jschart(d3data){
   
 	// create bar chart				
 	svg.selectAll("rect")
-		.data(worldphonesdata)
+		.data(r2d3Data)
 		.enter().append("rect")
 		.attr("class","rect")
 		.attr("transform","translate(" + margin.left + "," + margin.top + ")")
-		.attr("height", function(d,i) {return h - yscale(d.Country)})
-        .attr("width","100")
+		.attr("height", function(d,i) {return (d.slider*100)})
+        .attr("x","100")
 		.attr("x", function(d,i) {return (i * 110)})
-		.attr("y",function(d,i) {return yscale(d.Country)})
-		.attr("fill", function (d,i){ return colorScale(d.Year); })
+		.attr("y",function(d,i) {return yscale(d.slider)})
+		.attr("fill", function (d,i){ return colorScale(d.age); })
 		.on("mousemove", function(d) {
 			tooltip
               .style("left", d3.event.pageX-50 + "px")
               .style("top", d3.event.pageY - 25 + "px")
               .style("display", "inline-block")
-              .html(d.Country);
+              .html(d.slider);
 		})
 		.on("mouseout", function(d) {
 			tooltip
@@ -76,9 +90,9 @@ function d3jschart(d3data){
 		
 	// label of bars on top
 	svg.selectAll("text")
-		.data(worldphonesdata)
+		.data(r2d3Data)
 		.enter().append("text")
-		.text(function(d) {return d.Country*1000;})
+		.text(function(d) {return d.body_part;})
 			.attr("x", function(d, i) {return (i * 110) + margin.left + 20})
 			.attr("y", margin.top);
 
@@ -111,21 +125,21 @@ function d3jschart(d3data){
 
 	
 	svg.selectAll("circle")
-		.data(worldphonesdata)
+		.data(r2d3Data)
 		.enter().append("circle")
 		.attr('class','circle')
 		.attr("transform","translate(" + margin.left + "," + margin.top + ")")
 		.attr("cx", function(d,i) {return (i * 110)})
-		.attr("cy",function(d,i) {return yscale(d.Country)})
-		.attr("r", function(d,i) {return (h - yscale(d.Country))/10})
-		.attr("fill", function (d,i){ return colorScale(d.Year); })
+		.attr("cy",function(d,i) {return yscale(d.slider)})
+		.attr("r", function(d,i) {return d.slider*10})
+		.attr("fill", function (d,i){ return colorScale(d.age); })
 		
 		.on("mousemove", function(d) {
 			tooltip
               .style("left", d3.event.pageX-50 + "px")
               .style("top", d3.event.pageY - 25 + "px")
               .style("display", "inline-block")
-              .html(d.Country);
+              .html(d.slider);
 		})
 		.on("mouseout", function(d) {
 			tooltip
