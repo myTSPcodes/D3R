@@ -1,8 +1,9 @@
 /* while we hover mouse over bar chart its color will be orange */
 
 
-
-
+.well {
+  background-color: yellow;
+}
 
 /* tooltip parameters */
 .toolTip {

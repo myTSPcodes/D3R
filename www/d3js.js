@@ -13,7 +13,7 @@ function d3jschart(d3Dataa){
 	console.log(MyData)
 	console.log(MyData.age)
 	console.log(MyData.slider)
-	console.log(MyData.body_part)
+	console.log(MyData.variable)
 	//console.log(MyData['age'])
 	//console.log(MyData['weight'])
 
@@ -32,6 +32,8 @@ function d3jschart(d3Dataa){
 	var margin = {top: 50, right: 50, bottom: 50, left: 50},
 	w = 850 - margin.left - margin.right,
 	h = 550 - margin.top - margin.bottom;
+	
+	
 	
 	// create svg element and provide height and weight attributes
 	var svg = d3.select("#D3Plot")
@@ -92,7 +94,7 @@ function d3jschart(d3Dataa){
 	svg.selectAll("text")
 		.data(r2d3Data)
 		.enter().append("text")
-		.text(function(d) {return d.body_part;})
+		.text(function(d) {return d.variable;})
 			.attr("x", function(d, i) {return (i * 110) + margin.left + 20})
 			.attr("y", margin.top);
 

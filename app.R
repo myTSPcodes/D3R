@@ -5,10 +5,11 @@
 #Creating a dataframe form the WorldPhone dataset
 
 
-myData = read.csv("neiss.csv", TRUE, sep = ",")
+myData = read.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/heatmap_data.csv", TRUE, sep = ",")
 dfData = data.frame(myData)
 
-dfData = dfData[10:20,]
+## slicing to get small portion of data
+## dfData = dfData[10:20,]
 
 
 # setting the df.pid to rownames(myData)  / rownames(dfData) 
@@ -30,7 +31,7 @@ dfData$pid = rownames(dfData)
 ui <-  fluidPage(theme="d3style.css",
             
             # Give the page a title
-            titlePanel("Testing D3 v1"),
+            titlePanel("No Confusion with with Clarification"),
             
             
             
@@ -46,8 +47,8 @@ ui <-  fluidPage(theme="d3style.css",
               
               # Define the sidebar with one input
               sidebarPanel(
-                selectInput("bodyPart", "Body Part injured:", 
-                            choices= unique(dfData$body_part)),    #colnames(WorldPhones)),
+                selectInput("userSelection", "Choose your one:", 
+                            choices= unique(dfData$variable)),    #colnames(WorldPhones)),
                 hr(),
                 helpText("Source data"),
                 
@@ -70,8 +71,9 @@ ui <-  fluidPage(theme="d3style.css",
                 
                 
                 # this is the script where we create our d3 chart, which resides in www folder
-                #tags$script(src="testd3js.js"),
-                tags$script(src="d3js.js"),
+                ## default js is 
+               ##tags$script(src="d3js.js"),
+               tags$script(src="testd3js.js"),
                 
                 # place for d3 chart
                 plotOutput("D3Plot"),
@@ -116,8 +118,8 @@ server <- function(input, output,session) {
     # the type = 'dataNAME' ,we can give any name here but it must be match with d3js.js file                                      #,"nums"=input$foo         
    # payload1 <- data.frame(cbind('id'=c('one','two','three','four'),'y'=input$bodyPart,'val'=input$slider))
    # session$sendCustomMessage(type='sentMsg', jsonlite::toJSON(payload1))
-    
-    payload2 <- data.frame(cbind('slider'=input$slider,'body_part' = input$bodyPart,"age"=dfData[,"age"]))
+                      # TO GET the input from user use : 'variable' = input$userSelection
+     payload2 <- data.frame(cbind('slider'=input$slider,'variable' = dfData[,"variable"],"group"=dfData[,"group"],"value"=dfData[,"value"]))
      session$sendCustomMessage(type='r-data2-d3', jsonlite::toJSON(payload2))
 
     
