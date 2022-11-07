@@ -128,8 +128,12 @@ function d3jschart(d3Dataa){
     .on("mouseover", mouseover)
     .on("mousemove", mousemove)
     .on("mouseleave", mouseleave)
+    
+    
+    
+    
+    // controlling Shiny style from d3 
 
-
-
+d3.select('.well').style("background-color", "white")
 
 };
