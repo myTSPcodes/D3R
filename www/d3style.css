@@ -1,5 +1,7 @@
 /* while we hover mouse over bar chart its color will be orange */
-
+.col-sm-4 {
+    width: 30%;
+}
 
 .well {
   background-color: yellow;

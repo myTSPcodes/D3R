@@ -31,13 +31,20 @@ dfData$pid = rownames(dfData)
 ui <-  fluidPage(theme="d3style.css",
             
             # Give the page a title
-            titlePanel("No Confusion with with Clarification"),
+            titlePanel("No Confusion Matrix "),
+            helpText("Connected R [app.R] and d3 [d3.js]"),
+            helpText("Sent data from R to d3 into a matrix"),
+            helpText("We have two sliders that can use user input into our json object"),
+            helpText("But none of these can change the underlying data or working copy of that data ad hoc !"),
             
             
             
+            sliderInput(inputId = "slider2", label = "Select number of features (columns):", min = 0, max = 10, value = 10, step = 1),
+            textOutput(outputId = "result2"),
             
             
-            sliderInput(inputId = "slider", label = "Select a number:", min = 0.01, max = 3, value = 0.3, step = 0.01),
+            
+            sliderInput(inputId = "slider1", label = "Select number of rows:", min = 0, max = 10, value = 10, step = 1),
             textOutput(outputId = "result"),
             
             
@@ -47,19 +54,24 @@ ui <-  fluidPage(theme="d3style.css",
               
               # Define the sidebar with one input
               sidebarPanel(
-                selectInput("userSelection", "Choose your one:", 
+                selectInput("userSelection", "Choose your Y axis:", 
                             choices= unique(dfData$variable)),    #colnames(WorldPhones)),
                 hr(),
-                helpText("Source data"),
+                helpText("Select some rectangles and then click go to see which ones has been choosen"),
+                helpText("Setting data in R using interaction with d3"),
                 
+                actionButton("goButton", "Go"),
                 
                 textInput("caption", "Caption:", "Data Summary"),
                 
                 
                 textInput("TEXT1", "tEXT:", "Data Summary"), 
+                hr(),
                 
+                helpText("Your selected cell address:"),
                 
-                actionButton("goButton", "Go"),
+                tags$div(id = 'placeholder1')
+               
               ),
               
               # main panel where we will show the d3 plot
@@ -73,6 +85,7 @@ ui <-  fluidPage(theme="d3style.css",
                 # this is the script where we create our d3 chart, which resides in www folder
                 ## default js is 
                ##tags$script(src="d3js.js"),
+               
                tags$script(src="testd3js.js"),
                 
                 # place for d3 chart
@@ -82,9 +95,12 @@ ui <-  fluidPage(theme="d3style.css",
                 #h3(textOutput("TEXT1", container="click on the circle to lock output text to foo value")),
                 div("Some Examples -  ", class="someClass"),
                 div("Some Other examples -  ", class="otherClass"),
-                
+                div('empty', class="div_template"),
+               
+                # caption , TEXT1 and d3variable are actual variable names comming from d3/Rbackned
                 h3(textOutput("caption", container = span)),
-                h3(textOutput("TEXT1", container = span))
+                h3(textOutput("TEXT1", container = span)),
+               h3(textOutput("d3variable", container = span))
                 #div("Somee text", class="someClass", 
                 #    tags$input(type="submit", value="Dismiss")
                 #)
@@ -119,7 +135,7 @@ server <- function(input, output,session) {
    # payload1 <- data.frame(cbind('id'=c('one','two','three','four'),'y'=input$bodyPart,'val'=input$slider))
    # session$sendCustomMessage(type='sentMsg', jsonlite::toJSON(payload1))
                       # TO GET the input from user use : 'variable' = input$userSelection
-     payload2 <- data.frame(cbind('slider'=input$slider,'variable' = dfData[,"variable"],"group"=dfData[,"group"],"value"=dfData[,"value"]))
+     payload2 <- data.frame(cbind('slider2'=input$slider2, 'slider1'=input$slider1,'variable' = dfData[,"variable"],"group"=dfData[,"group"],"value"=dfData[,"value"]))
      session$sendCustomMessage(type='r-data2-d3', jsonlite::toJSON(payload2))
 
     
@@ -128,12 +144,14 @@ server <- function(input, output,session) {
     
     output$result <- renderText({
       input$slider
-      
+
     })
     
   })
   
-  
+  clicks <- eventReactive(input$goButton, {
+    input$d3variable
+  })
   
   cap <- eventReactive(input$goButton, {
     input$caption
@@ -146,6 +164,11 @@ server <- function(input, output,session) {
       input$foo 
    
     
+  })
+  
+  
+  output$d3variable <- renderText({
+    clicks()
   })
   
   
