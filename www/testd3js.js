@@ -14,8 +14,9 @@ function d3jschart(d3Dataa){
   console.log(data)
    console.log(data.slice(0,3))
    
-   data = data.slice(0,MyData.slider2*10)
-	//console.log(MyData.group)
+  // data = data.slice(0,MyData.slider2*10)
+   
+	console.log(MyData)
 	//console.log(MyData.slider)
 	//console.log(MyData.variable)
 	//console.log(MyData['group'])
@@ -60,12 +61,20 @@ function d3jschart(d3Dataa){
 	// create svg element and provide height and weight attributes
 	var svg = d3.select("#D3Plot")
 		.append("svg")
-		.attr("width", width + margin.left + margin.right)
+		.attr("width", 200+ width + margin.left + margin.right)
 		.attr("height", height + margin.top + margin.bottom)
 		.append("g")
   .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 		
+		
+			var svg2 = d3.select("#D3Plot2")
+		.append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+  .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
 		
 
 
@@ -85,7 +94,7 @@ function d3jschart(d3Dataa){
   // Build X scales and axis:
   var x = d3.scaleBand()
     .range([ 0, width ]) //* MyData.slider2/10 ])
-    .domain(myGroup)//.slice(0,MyData.slider2))
+    .domain(myGroup.slice(0,MyData.slider2))//.slice(0,MyData.slider2))
     .padding(0.05);
   svg.append("g")
     .style("font-size", 15)
@@ -96,7 +105,7 @@ function d3jschart(d3Dataa){
   // Build Y scales and axis:
   var y = d3.scaleBand()
     .range([ height,0 ])//* MyData.slider1/10, 0 ])
-    .domain(myVars) //.slice(0,MyData.slider1))
+    .domain(myVars.slice(0,MyData.slider1)) //.slice(0,MyData.slider1))
     .padding(0.05);
   svg.append("g")
     .style("font-size", 15)
@@ -133,14 +142,46 @@ function currentColor (col){
   }
   
 } 
+
+var sampleCircle = svg2.selectAll()
+.data(data)
+.join("circle")
+  .attr("r", parseInt(MyData.var)*10)
+      .attr("fill", 'yellow' )
+      .attr("cx",(d) => {return d.id*70*(MyData.var)})
+      .attr("cy", 250)
+
+ 
+ 
+              svg2.selectAll('circle')
+            
+     .on("mouseover", function(d){
+            d3.select(this).transition()
+              .duration(500).style('stroke', 'blue').attr('r',100)
+     })
+     .on("mouseleave", function(d){
+            d3.select(".someClass").append('a').text('blue')
+            
+            d3.select(this).transition()
+              .duration(500).style('stroke', 'red').attr('r',40)
+     })  
+//    sampleCircle  
+//.transition()
+//.duration(2000)
+  //    .attr("cx",(d) => {return d.var*10})
+ //     .attr("cy", 100)
+
+
+    
+
+  
   // add the squares
   svg.selectAll()
-    .data(data, function(d) {return d.group+':'+d.variable;})
-    //.enter()
-    //.append("rect")
+    .data(data)
+
     .join("rect")
-      .attr("x", function(d) { return x(d.group) })
-      .attr("y", function(d) { return y(d.variable) })
+      .attr("x", function(d) { return x(d.group.slice(0,MyData.slider2*10)) })
+      .attr("y", function(d) { return y(d.variable.slice(0,MyData.slider1*10)) })
         
 
       .attr("rx", 5)
@@ -159,6 +200,7 @@ function currentColor (col){
     .on("mouseleave", function(d){
       //alert(msg(d))
     })
+
 
     
     
@@ -179,7 +221,7 @@ function currentColor (col){
             
             
                Shiny.setInputValue(
-              "d3variable", 
+              "d3Variable", 
               showSelected(selectedOnes));
               
 
@@ -252,6 +294,10 @@ function currentColor (col){
     // controlling Shiny style from d3 
 
 d3.select('.well').style("background-color", "white");
+
+
+
+
 //d3.selectAll('.help-block').attr('class', "help-block col-sm-4");
 
 
