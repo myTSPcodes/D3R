@@ -12,7 +12,7 @@ function d3jschart(d3Dataa){
   let MyData = r2d3Data[0]; // single data
   var data = r2d3Data
   console.log(data)
-   console.log(data.slice(0,3))
+  console.log(data.slice(0,3))
    
    data = data.slice(0,MyData.slider2*10)
 	//console.log(MyData.group)
@@ -165,7 +165,7 @@ function currentColor (col){
     d3.selectAll("rect")
     .on("click", function(d){
    //  alert(msg(d))
-            d3.select("#placeholder1").text([d.variable,d.group])
+            //d3.select("#placeholder1").text([d.variable,d.group])
 
             d3.select(this).style('stroke', currentColor(d3.select(this).style('stroke')))
             
@@ -188,8 +188,8 @@ function currentColor (col){
     
     
     const showSelected = (s) => {
-      msgs = ""
       
+      msgs = ""
       s.forEach((i)=>{
         msgs +=  "(" + i+ ")"
         msgs += ","
@@ -197,11 +197,10 @@ function currentColor (col){
         
   
       
-      
+       d3.select("#placeholder1").text(msgs)
     
       
     //  });
-            return msgs
 
     }
       
@@ -210,8 +209,13 @@ function currentColor (col){
     
     
 
+  d3.select("#cleanButton").on("click", function(d){
+    
+    d3.select("#placeholder1").text("")
+    d3.selectAll("rect").style('stroke', currentColor(d3.select(this).style('stroke')))
 
-
+    
+  })
 
     
     
